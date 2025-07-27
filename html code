@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stylish Password Strength Checker</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      padding: 12px 40px 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #6e8efb;
+      outline: none;
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: #888;
+    }
+
+    #feedback {
+      text-align: left;
+      font-size: 14px;
+      color: #e53935;
+      margin-top: 15px;
+    }
+
+    .strong {
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #eee;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .score-1 { background: #f44336; width: 20%; }
+    .score-2 { background: #ff9800; width: 40%; }
+    .score-3 { background: #ffc107; width: 60%; }
+    .score-4 { background: #8bc34a; width: 80%; }
+    .score-5 { background: #4caf50; width: 100%; }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 25px;
+        margin: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🔐 Password Strength Checker</h2>
+    
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Enter your password" oninput="checkPasswordStrength()" />
+      <span class="toggle-visibility" onclick="toggleVisibility()">👁️</span>
+    </div>
+
+    <div class="progress-bar">
+      <div id="progress" class="progress-fill"></div>
+    </div>
+
+    <div id="feedback"></div>
+  </div>
+
+  <script>
+    function toggleVisibility() {
+      const input = document.getElementById("password");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    function checkPasswordStrength() {
+      const password = document.getElementById("password").value;
+      let score = 0;
+      let feedback = [];
+
+      if (password.length >= 8) score++; else feedback.push("❌ At least 8 characters");
+      if (/[A-Z]/.test(password)) score++; else feedback.push("❌ At least one uppercase letter");
+      if (/[a-z]/.test(password)) score++; else feedback.push("❌ At least one lowercase letter");
+      if (/[0-9]/.test(password)) score++; else feedback.push("❌ At least one number");
+      if (/[!@#$%^&*(),.?\":{}|<>]/.test(password)) score++; else feedback.push("❌ At least one special character");
+
+      const feedbackDiv = document.getElementById("feedback");
+      const progress = document.getElementById("progress");
+
+      progress.className = `progress-fill score-${score}`;
+
+      if (score === 5) {
+        feedbackDiv.innerHTML = `<span class="strong">✅ Strong password!</span>`;
+      } else {
+        feedbackDiv.innerHTML = feedback.join("<br>") + `<br><br><strong>Score: ${score}/5</strong>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
